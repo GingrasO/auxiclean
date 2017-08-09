@@ -10,7 +10,7 @@ matrix:
       python: 3.5
       env: 
         - TRAVIS_PYTHON_VERSION=3.5
-        - DEPLOY_FILE="dist/auxiclean_osx.app"
+        - DEPLOY_FILE="dist/auxiclean_osx.zip"
 
     - os: osx
       language: generic
