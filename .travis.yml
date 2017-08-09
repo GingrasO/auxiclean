@@ -17,7 +17,7 @@ matrix:
       python: 3.6
       env: 
         - TRAVIS_PYTHON_VERSION=3.6
-        - DEPLOY_FILE="dist/auxiclean_osx.app"
+        - DEPLOY_FILE="dist/auxiclean_osx.zip"
 os: linux
 python:
   - 3.5
@@ -59,8 +59,9 @@ before_deploy:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
       pip install pyinstaller;
     fi
+  # for macos we compress the .app bundle to be able to upload it on github
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py;
+      pyinstaller --onefile --windowed --clean --name=auxiclean_osx run.py && cd dist && zip -r auxiclean_osx.zip auxiclean_osx.app;
     fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       pyinstaller --onefile --windowed --clean --name=auxiclean_linux run.py;
@@ -69,7 +70,15 @@ before_deploy:
 deploy:
   - provider: releases
     api_key:
-      secure: "a1HB75QQK1XKUCNjNdBv7ZT/vn4WV+9PAycEiOgBDWpyi8VqDzeOLIqkoZ6mmXgy7ORztTMYW5QbU/ztIptg+g58JV49rxr2oAFKHweeA3CykkcWuEx4h0/RgSmdHoFbsuZuIYswV5FPFjSaokyd0szcnPBS1Fuo4u4TiPo5xEmMhNVhIKZUmIlqmWZ18yElk2DyTA84zTY86HJaQPjYGKxS7EIZ1q7hfTgBFFRVD4hnoFeP5R1eXfR8TIU0/IgY46AXnrezfLowmsv1XOrS+81sLH7h6LBj/QGI4WujXXT9KWqxtFHiBB9ikapTmL1XSBLA3XeZGe160FyyRhvHUpO1lHrFxFieTYCgMyRgPbGkLrFKIRzy97pHFkSpASX9Jis4Zp1PF2hKvpNaXOn7AwcwD4Wu7Gt7NWLLsGRc7GYumIaVWnL8GT0ZqxaqR3NihXiG8ILytWzcEMF6gTsAvZjKcnio/1I9LFAYI5xti5npZjWMt0/T498UcFVdMIt5en5T+YPgW7rMrswG4WvDdvk3oHtk6ZKSUKibVvAzUfsEMD6BRngTXOEFH7pSUJo8N+leF+UeeuWYScCAVGHf9op0N6eJC4ETImXTtxGDYZ7Tyf0ZEfdesCtzL0rP5IUJbMSUg+DveflbHjm991dxDJQwedvka8TNwmsGeo2Z3kQ="
+      secure: "zvDBtHXHsAl19O9NF/XKenhsgFazr9bmfLCIEsQU9MMSdhCTtjyTBys5ID7lxyGzDSiJED6KrernQ0a0x0Ahr3qEEbemVrEOqgMO42Nkl2clS5dfUlTv7b+bxot8XNgNP8JHgxrETn/kjRxOenSt16yuqaPFCLq604tPV5sqmvqRA2/EJ6vcxCUXrb10YFliG+nPfYxmDMSGZnyStYh404Syu0NEqB2lDnhO6S4z9DxECwTwND+AVADpiLqMaFsUMsZ+tpzCrKfYJwxeYb2zINvMDe2x4Po7PLUk7u1H7Aq0eUtG0zGUd/sqYtWBiumlzvYsQ6B3M7woVZ3joPK8gyDE2U8SQO2Gfk9gFFqLYdBzruJdmXBmYYGCPtpNirk/9jdHjx19Sg2JSeilhMryg14in2/dnZGUgQ5kuD/9DHwZKNdUw8CuAT3ddK8QC/ViLY3Fbh3HnTlE4Kg/rkPiXWit3ART6I3D3v/YjWwNohItSF/uiblsUP/7uZtualYQZPz7rr+B2HtMX2oGVRx/uQsfWv0CXFyJDIpxMs53vW6h4aMNjuRTqzg1/oiOA191rLrdnR/ip5G+eUlKB8yIXcd703cgFpYGNdYjI31tpYm+JAaMGdXjG9qxkK16xxSOI+il0/yPmqHIu60yB4VU5G2/UjvTpoYVXbBMek09dQ4="
+      # physumasso
+      #secure: "a1HB75QQK1XKUCNjNdBv7ZT/vn4WV+9PAycEiOgBDWpyi8VqDzeOLIqkoZ6mmXgy7ORztTMYW5QbU/ztIptg+g58JV49rxr2oAFKHweeA3CykkcWuEx4h0/RgSmdHoFbsuZuIYswV5FPFjSaokyd0szcnPBS1Fuo4u4TiPo5xEmMhNVhIKZUmIlqmWZ18yElk2DyTA84zTY86HJaQPjYGKxS7EIZ1q7hfTgBFFRVD4hnoFeP5R1eXfR8TIU0/IgY46AXnrezfLowmsv1XOrS+81sLH7h6LBj/QGI4WujXXT9KWqxtFHiBB9ikapTmL1XSBLA3XeZGe160FyyRhvHUpO1lHrFxFieTYCgMyRgPbGkLrFKIRzy97pHFkSpASX9Jis4Zp1PF2hKvpNaXOn7AwcwD4Wu7Gt7NWLLsGRc7GYumIaVWnL8GT0ZqxaqR3NihXiG8ILytWzcEMF6gTsAvZjKcnio/1I9LFAYI5xti5npZjWMt0/T498UcFVdMIt5en5T+YPgW7rMrswG4WvDdvk3oHtk6ZKSUKibVvAzUfsEMD6BRngTXOEFH7pSUJo8N+leF+UeeuWYScCAVGHf9op0N6eJC4ETImXTtxGDYZ7Tyf0ZEfdesCtzL0rP5IUJbMSUg+DveflbHjm991dxDJQwedvka8TNwmsGeo2Z3kQ="
+    file: $DEPLOY_FILE
+    skip_cleanup: true
+    on:
+      tags: true
+      python: 3.5
+
     file: $DEPLOY_FILE
     skip_cleanup: true
     on:
